@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_window</class>
+ <widget class="QWidget" name="main_window">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>484</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>484</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Star Citizen Friendlist Management</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="le_login_first">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maxLength">
+      <number>50</number>
+     </property>
+     <property name="placeholderText">
+      <string>Login premier compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="le_password_second">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <kerning>true</kerning>
+      </font>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Mot de passe second compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QComboBox" name="cmb_choice_universe_first">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>PU</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>PTU</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="2">
+    <widget class="QPushButton" name="btn_load_friendlist">
+     <property name="text">
+      <string>--&gt; Charge la liste d'amis du premier au second compte --&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="le_connect_first_account">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Premier Compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Second Compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="QPushButton" name="btn_add_orga_second_account">
+     <property name="minimumSize">
+      <size>
+       <width>137</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Ajout orga au second compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="le_connect_second_account">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLineEdit" name="le_login_second">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maxLength">
+      <number>50</number>
+     </property>
+     <property name="placeholderText">
+      <string>Login second compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="btn_connection_first_account">
+     <property name="text">
+      <string>Connection premier compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QPushButton" name="btn_connection_second_account">
+     <property name="text">
+      <string>Connection second compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QComboBox" name="cmb_choice_universe_second">
+     <item>
+      <property name="text">
+       <string>PU</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>PTU</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="16" column="0" colspan="2">
+    <widget class="QTextEdit" name="te_log">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>400</height>
+      </size>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0" colspan="2">
+    <widget class="QPushButton" name="btn_reverse_account">
+     <property name="text">
+      <string>&lt;-- Inverser les comptes--&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QPushButton" name="btn_add_orga_first_account">
+     <property name="minimumSize">
+      <size>
+       <width>137</width>
+       <height>23</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Ajout orga au premier compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="le_password_first">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Mot de passe premier compte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="2">
+    <widget class="QLineEdit" name="le_add_orga">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="placeholderText">
+      <string>TAG de l'orga à ajouter</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>le_login_first</tabstop>
+  <tabstop>le_password_first</tabstop>
+  <tabstop>cmb_choice_universe_first</tabstop>
+  <tabstop>btn_connection_first_account</tabstop>
+  <tabstop>le_login_second</tabstop>
+  <tabstop>le_password_second</tabstop>
+  <tabstop>cmb_choice_universe_second</tabstop>
+  <tabstop>btn_connection_second_account</tabstop>
+  <tabstop>le_connect_second_account</tabstop>
+  <tabstop>btn_load_friendlist</tabstop>
+  <tabstop>le_connect_first_account</tabstop>
+  <tabstop>te_log</tabstop>
+  <tabstop>btn_add_orga_first_account</tabstop>
+  <tabstop>btn_add_orga_second_account</tabstop>
+  <tabstop>le_add_orga</tabstop>
+  <tabstop>btn_reverse_account</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
