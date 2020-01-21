@@ -79,22 +79,31 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
         if not all([field.text() for field in fields]):
             self.te_log.append("Tous les champs ne sont pas remplis...")
         else:
+            dev_name = dev_type = ""
             self.te_log.append("Connexion en cours...")
             self.first_account = StarCitizenWebApi(universe=self.cmb_choice_universe_first.currentText())
             response = self.first_account.login(self.le_login_first.text(), self.le_password_first.text())
             if response == 'ErrMultiStepRequired':
-                code, resultat = QtWidgets.QInputDialog.getText(self,
-                                                                "Entrez votre code double authentification", "Code : ")
-                retour_code, dev_type, dev_name = self.first_account.multi_step(int(code))
+                retour_code = None
+                #code, resultat = QtWidgets.QInputDialog.getText(self, "Entrez votre code double authentification", "Code : ")
+                #retour_code, dev_type, dev_name = self.first_account.multi_step(int(code))
                 while not retour_code:
-                    self.te_log.append("Mauvais code !!!")
+                    # self.te_log.append("Mauvais code !!!")
                     code, resultat = QtWidgets.QInputDialog.getText(self,
                                                                     "Entrez votre code double authentification",
                                                                     "Code : ")
-                    if self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)[0]:
-                        break
+                    if dev_name == "" or dev_type == "":
+                        if self.first_account.multi_step(int(code))[0]:
+                            break
+                        else:
+                            retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)
+                            self.te_log.append("Mauvais code !!!")
                     else:
-                        retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)
+                        if self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)[0]:
+                            break
+                        else:
+                            retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)
+                            self.te_log.append("Mauvais code !!!")
                 self.te_log.append("Vous êtes connecté !")
                 self.le_connect_first_account.setText("Connecté")
                 self.le_connect_first_account.setStyleSheet("color: green;")
