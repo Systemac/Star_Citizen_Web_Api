@@ -45,26 +45,26 @@ class StarCitizenWebApi:
         if self.response.json()['msg'] == "OK":
             self.nickname = self.response.json()['data']['nickname']
             print("Vous etes connecté")
+            return "OK"
             # print(response.cookies)
             # print(self.cookie)
         elif self.response.json()['code'] == 'ErrMultiStepRequired':
             print('ErrMultiStepRequired')
-            return False
-
+            return 'ErrMultiStepRequired'
         elif self.response.json()['code'] == 'ErrCaptchaRequired':
-            print(
-                'Captcha demandé, trop de tentative, logguer-vous depuis votre naviguateur et valider le captcha puis '
-                'relancer le programme')
+            return 'Captcha'
+        elif self.response.json()['code'] == 'ErrWrongPassword_username':
+            return 'WrongPassword'
         elif self.response.json()['success'] == 0:
             print("Erreur de connexion")
             return 'Erreur'
         # print(response.cookies.get_dict())
         print(f'Token RSI : {self.token_rsi}')
-        return True
 
-    def multi_step(self, factor):
-        dev_type = self.response.json()['data']['device_type']
-        dev_name = self.response.json()['data']['device_name']
+    def multi_step(self, factor, dev_type=None, dev_name=None):
+        if dev_name is None and dev_type is None:
+            dev_type = self.response.json()['data']['device_type']
+            dev_name = self.response.json()['data']['device_name']
         print("Double authentification requise : ")
         # factor = input('Code 2 facteur : ')
         params = {
@@ -79,10 +79,12 @@ class StarCitizenWebApi:
                                       params=params, headers=headers, cookies=self.cookie)
         print(self.response.json())
         # print(response.cookies.get_dict())
-        if self.response.json()['msg'] == "OK":
+        if self.response.json()['code'] == "OK":
             self.nickname = self.response.json()['data']['nickname']
             print("Vous etes connecté")
-        return True
+            return True, dev_type, dev_name
+        elif self.response.json()['code'] == 'ErrMultiStepWrongCode':
+            return False, dev_type, dev_name
 
     def listed_ami(self):
         friend_list = []
