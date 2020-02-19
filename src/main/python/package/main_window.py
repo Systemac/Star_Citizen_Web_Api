@@ -1,5 +1,6 @@
 from PySide2 import QtWidgets
 from time import sleep
+import concurrent.futures
 
 from package.api.custom_ui.window_ui import Ui_main_window
 from package.api.test_api import StarCitizenWebApi
@@ -24,10 +25,11 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
     def setup_connections(self):
         self.btn_add_orga_first_account.clicked.connect(self.add_orga_first_account)
         self.btn_add_orga_second_account.clicked.connect(self.add_orga_second_account)
-        self.btn_reverse_account.clicked.connect(self.reverse)
+        #self.btn_reverse_account.clicked.connect(self.reverse)
         self.btn_load_friendlist.clicked.connect(self.load_friendlist)
         self.btn_connection_first_account.clicked.connect(self.login_account_first_account)
         self.btn_connection_second_account.clicked.connect(self.login_account_second_account)
+        self.btn_add_list_link.clicked.connect(self.add_list_link)
 
     def modify_widget(self):
         css_file = self.ctx.get_resource('style.css')
@@ -47,8 +49,13 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
             if response:
                 self.te_log.append(f"Vous allez ajouté les membres de {self.le_add_orga.text()} à votre "
                                    f"liste d'amis...")
-                for i in mb:
-                    self.te_log.append(self.first_account.add_friend(i))
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    results = [executor.submit(self.first_account.add_friend, i) for i in mb]
+                    for f in concurrent.futures.as_completed(results):
+                        self.te_log.append(f.result())
+                '''for i in mb:
+                    self.te_log.append(self.first_account.add_friend(i))'''
+                #self.te_log.append(result)
                 self.te_log.append("Membres ajoutés !")
             else:
                 self.te_log.append(f"Le tag rentré ne corresponde à aucune orga, voici le résultat de la recherche "
@@ -66,8 +73,12 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
             if response:
                 self.te_log.append(f"Vous allez ajouté les membres de {self.le_add_orga.text()} à votre "
                                    f"liste d'amis...")
-                for i in mb:
-                    self.te_log.append(self.second_account.add_friend(i))
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    results = [executor.submit(self.second_account.add_friend, i) for i in mb]
+                    for f in concurrent.futures.as_completed(results):
+                        self.te_log.append(f.result())
+                '''for i in mb:
+                    self.te_log.append(self.second_account.add_friend(i))'''
                 self.te_log.append("Membres ajoutés !")
             else:
                 self.te_log.append(f"Le tag rentré ne corresponde à aucune orga, voici le résultat de la recherche "
@@ -84,26 +95,19 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
             self.first_account = StarCitizenWebApi(universe=self.cmb_choice_universe_first.currentText())
             response = self.first_account.login(self.le_login_first.text(), self.le_password_first.text())
             if response == 'ErrMultiStepRequired':
-                retour_code = None
-                #code, resultat = QtWidgets.QInputDialog.getText(self, "Entrez votre code double authentification", "Code : ")
-                #retour_code, dev_type, dev_name = self.first_account.multi_step(int(code))
+                code, resultat = QtWidgets.QInputDialog.getText(self,
+                                                                "Entrez votre code double authentification", "Code : ")
+                retour_code, dev_type, dev_name = self.first_account.multi_step(int(code))
                 while not retour_code:
-                    # self.te_log.append("Mauvais code !!!")
+                    self.te_log.append("Mauvais code !!!")
                     code, resultat = QtWidgets.QInputDialog.getText(self,
                                                                     "Entrez votre code double authentification",
                                                                     "Code : ")
-                    if dev_name == "" or dev_type == "":
-                        if self.first_account.multi_step(int(code))[0]:
-                            break
-                        else:
-                            retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)
-                            self.te_log.append("Mauvais code !!!")
+                    if self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)[0]:
+                        break
                     else:
-                        if self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)[0]:
-                            break
-                        else:
-                            retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type, dev_name=dev_name)
-                            self.te_log.append("Mauvais code !!!")
+                        retour_code, dev_type, dev_name = self.first_account.multi_step(int(code), dev_type=dev_type,
+                                                                                        dev_name=dev_name)
                 self.te_log.append("Vous êtes connecté !")
                 self.le_connect_first_account.setText("Connecté")
                 self.le_connect_first_account.setStyleSheet("color: green;")
@@ -191,3 +195,22 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
                 self.te_log.append(self.second_account.add_friend(i))
                 sleep(0.2)
             self.te_log.append("Membres ajoutés !")
+
+    def add_list_link(self):
+        fields = [self.le_login_first, self.le_password_first]
+        if not all([field.text() for field in fields]):
+            self.te_log.append("Tous les champs ne sont pas remplis...")
+        elif self.le_connect_first_account.text() != "Connecté":
+            self.te_log.append("Merci de vous connecter avant d'ajouter la liste de liens...")
+        else:
+            liste = []
+            link = self.te_link.toPlainText()
+            for i in link.split("\n"):
+                name = i.replace("https://robertsspaceindustries.com/citizens/",'')
+                if i != '':
+                    liste.append(name)
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                results = [executor.submit(self.first_account.add_friend, i) for i in liste]
+                for f in concurrent.futures.as_completed(results):
+                    self.te_log.append(f.result())
+            self.te_link.clear()
