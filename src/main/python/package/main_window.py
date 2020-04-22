@@ -191,10 +191,14 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
             self.te_log.append(f"Vous allez ajouter potentiellement {leninist} amis à la liste d'amis du second "
                                f"compte.")
             print(friendlist)
-            for i in friendlist:
+            '''for i in friendlist:
                 self.te_log.append(self.second_account.add_friend(i))
                 sleep(0.2)
-            self.te_log.append("Membres ajoutés !")
+            self.te_log.append("Membres ajoutés !")'''
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                results = [executor.submit(self.second_account.add_friend, i) for i in friendlist]
+                for f in concurrent.futures.as_completed(results):
+                    self.te_log.append(f.result())
 
     def add_list_link(self):
         fields = [self.le_login_first, self.le_password_first]
