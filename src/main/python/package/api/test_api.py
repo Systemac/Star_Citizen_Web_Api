@@ -11,6 +11,7 @@ class StarCitizenWebApi:
         self.token_rsi = ''
         self.nickname = ''
         self.cookie = None
+        self.cookie_login = None
         self.URL_PU_BASE = 'https://robertsspaceindustries.com/'
         self.URL_PTU_BASE = 'https://ptu.cloudimperiumgames.com/'
         self.URL_SIGNIN = 'api/account/signin'
@@ -45,6 +46,10 @@ class StarCitizenWebApi:
         if self.response.json()['msg'] == "OK":
             self.nickname = self.response.json()['data']['nickname']
             print("Vous etes connecté")
+            response = requests.post('https://ptu.cloudimperiumgames.com/api/spectrum/auth/identify',
+                                     cookies=self.cookie)
+            print(response.json())
+            self.cookie_login = response.cookies
             return "OK"
             # print(response.cookies)
             # print(self.cookie)
@@ -220,3 +225,30 @@ class StarCitizenWebApi:
         # print(list_membres)
         #print(len(list_membres))
         return True, list_membres
+
+    def send_friend_requests(self, name_friend):
+        headers = {
+            'Origin': 'https://ptu.cloudimperiumgames.com',
+            self.key_token_rsi: self.token_rsi,
+            'Referer': 'https://ptu.cloudimperiumgames.com/spectrum/settings/friends'
+        }
+
+        payload = {
+            'community_id': 'null',
+            'text': name_friend,
+            'ignore_self': 'true'
+        }
+
+        response = requests.post('https://ptu.cloudimperiumgames.com/api/spectrum/search/member/autocomplete', headers=headers, cookies=self.cookie_login, params=payload)
+        print(response.json())
+        if response.json()['success'] == 0:
+            if response.json()['code'] == 'ErrCannotAddItself':
+                return 'Vous ne pouvez pas vous ajouter...'
+            elif response.json()['code'] == 'ErrNoAccountForNickname':
+                return f'{name_friend} n\'est pas sur le serveur'
+            elif response.json()['code'] == 'ErrValidationFailed':
+                if response.json()['data']['properties']['contact_account_id'] == 'You already have this account ' \
+                                                                                  'as a contact':
+                    return f'{name_friend} est déjà dans vos contact'
+        else:
+            return f'{name_friend} ajouté avec succes !'

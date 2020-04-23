@@ -196,7 +196,7 @@ class MainWindow(Ui_main_window, QtWidgets.QWidget):
                 sleep(0.2)
             self.te_log.append("Membres ajoutés !")'''
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                results = [executor.submit(self.second_account.add_friend, i) for i in friendlist]
+                results = [executor.submit(self.second_account.send_friend_requests, i) for i in friendlist]
                 for f in concurrent.futures.as_completed(results):
                     self.te_log.append(f.result())
 
